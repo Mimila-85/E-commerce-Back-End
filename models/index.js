@@ -1,12 +1,13 @@
-// import models
+// Import models
 const Product = require('./Product');
 const Category = require('./Category');
 const Tag = require('./Tag');
 const ProductTag = require('./ProductTag');
 
-// Categories have many Products
+// Define a Categories as having many Products to create a foreign key in the `license` table
 Category.hasMany(Product, {
   foreignKey: 'category_id',
+  // When we delete a Category, make sure to also delete the associated Products. As Category has many products, but a product can only belong to one category.
   onDelete: 'CASCADE'
 });
 
@@ -18,8 +19,6 @@ Product.belongsTo(Category, {
   }
 });
 
-
-
 // Products belongToMany Tags (through ProductTag)
 // Define the ProductTag model as our through table. Sequilize creates a productId as foreign key.
 Product.belongsToMany(Tag, { through: ProductTag });
@@ -28,6 +27,7 @@ Product.belongsToMany(Tag, { through: ProductTag });
 // Define the ProductTag model as our through table. Sequilize creates a tagId as foreign key.
 Tag.belongsToMany(Product, { through: ProductTag });
 
+// Package our models and export them as an object so we can import them together and use their proper names.
 module.exports = {
   Product,
   Category,
