@@ -1,4 +1,5 @@
 const router = require('express').Router();
+// Import the models
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // The `/api/products` endpoint
@@ -14,8 +15,10 @@ router.get('/', async (req, res) => {
         { model: Tag, through: ProductTag }
       ]
     });
+    // Sucess response 200 - OK
     res.status(200).json(productsAll);
   } catch(err) {
+    // Server error response 500 - Internal Server Error
     res.status(500).json(err);
   }  
 });
@@ -32,11 +35,14 @@ router.get('/:id', async (req, res) => {
       ]
     });
     if(!productSingle){
+      // Client error response 404 - Not found
       res.status(404).json({ message: 'No product found with this id' });
       return;
     }
+    // Sucess response 200 - OK
     res.status(200).json(productSingle);
   } catch(err) {
+    // Server error response 500 - Internal Server Error
     res.status(500).json(err);
   }
 });
@@ -63,13 +69,13 @@ router.post('/', (req, res) => {
         });
         return ProductTag.bulkCreate(productTagIdArr);
       }
-      // if no product tags, just respond
+      // Sucess response 200 - OK
       res.status(200).json(product);
     })
     .then((productTagIds) => res.status(200).json(productTagIds))
     .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
+    // Client error response 400 - Bad request
+    res.status(400).json(err);
     });
 });
 
@@ -110,7 +116,7 @@ router.put('/:id', (req, res) => {
     })
     .then((updatedProductTags) => res.json(updatedProductTags))
     .catch((err) => {
-      // console.log(err);
+      // Client error response 400 - Bad request
       res.status(400).json(err);
     });
 });
@@ -125,11 +131,13 @@ router.delete('/:id', async (req, res) => {
   });
 
   if(!productDelete){
+    // Client error response 404 - Not found
     res.status(404).json({ message: 'No product found with this id.'})
   }
-
+  // Sucess response 200 - OK
   res.status(200).json(productDelete);
 }catch(err){
+  // Server error response 500 - Internal Server Error
   res.status(500).json(err);
 }
 });
